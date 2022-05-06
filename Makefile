@@ -3,7 +3,6 @@ BUILD_DIR = bin
 
 INCLUDES += -Isrc
 
-CXXFILES += src/App.cpp
 CXXFILES += src/main.cpp
 CXXFILES += src/utils.cpp
 
