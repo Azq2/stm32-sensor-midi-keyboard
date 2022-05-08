@@ -25,7 +25,6 @@ inline void gpio_set_value(uint32_t port, uint16_t pins, bool value) {
 	value ? gpio_set(port, pins) : gpio_clear(port, pins);
 }
 
-void gpio_set_all_analog(void);
 void uart_simple_setup(uint32_t usart, uint32_t baudrate, bool printf);
 
 void delay_init(void);

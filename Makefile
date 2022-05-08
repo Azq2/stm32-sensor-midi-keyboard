@@ -5,6 +5,9 @@ INCLUDES += -Isrc
 
 CXXFILES += src/main.cpp
 CXXFILES += src/utils.cpp
+CXXFILES += src/App.cpp
+CXXFILES += src/UsbMidi.cpp
+CXXFILES += src/UsbMidiDescr.cpp
 
 DEVICE=stm32f103c8t6
 OOCD_FILE = board/stm32f1discovery.cfg

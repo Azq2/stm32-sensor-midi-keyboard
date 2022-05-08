@@ -12,23 +12,6 @@
 
 static uint32_t uart_for_prinf = 0;
 
-void gpio_set_all_analog(void) {
-	rcc_periph_clock_enable(RCC_GPIOA);
-	rcc_periph_clock_enable(RCC_GPIOB);
-	rcc_periph_clock_enable(RCC_GPIOC);
-	rcc_periph_clock_enable(RCC_GPIOD);
-	
-	gpio_set_mode(GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, GPIO_ALL);
-	gpio_set_mode(GPIOB, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, GPIO_ALL);
-	gpio_set_mode(GPIOC, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, GPIO_ALL);
-	gpio_set_mode(GPIOD, GPIO_MODE_INPUT, GPIO_CNF_INPUT_ANALOG, GPIO_ALL);
-	
-	rcc_periph_clock_disable(RCC_GPIOA);
-	rcc_periph_clock_disable(RCC_GPIOB);
-	rcc_periph_clock_disable(RCC_GPIOC);
-	rcc_periph_clock_disable(RCC_GPIOD);
-}
-
 void uart_simple_setup(uint32_t usart, uint32_t baudrate, bool use_for_printf) {
 	usart_set_baudrate(usart, baudrate);
 	usart_set_databits(usart, 8);
