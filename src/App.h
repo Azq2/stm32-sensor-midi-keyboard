@@ -10,6 +10,7 @@ class App {
 		constexpr static bool DEBUG_KEYS = false; // true for key press debug
 		constexpr static char NOTE_OFFSET = 36; // C2
 		constexpr static uint32_t DEBOUNCE_CYCLES = 10000000; // cpu cycles for debounce keys
+		constexpr static float SENSOR_KEY_THRESHOLD = 1; // Threshold in % for sensor key "pressed" state
 	public:
 		struct Pin {
 			uint32_t port;

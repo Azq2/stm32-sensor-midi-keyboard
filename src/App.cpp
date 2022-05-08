@@ -118,9 +118,10 @@ void App::initSensors() {
 }
 
 bool App::isPressed(const Pin &p) {
+	// FIXME: change float to int
 	int cnt = readPulses(p);
 	float pct = 100 - (float) p.calibrate / (float) cnt * 100;
-	return pct > 1;
+	return pct > SENSOR_KEY_THRESHOLD;
 }
 
 int App::run() {
