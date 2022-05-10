@@ -192,7 +192,6 @@ int App::run() {
 					}
 					
 					last_pressed[i].state = pressed;
-					cnt++;
 				} else {
 					last_pressed[i].time = DWT_CYCCNT;
 				}
