@@ -21,13 +21,6 @@ class App {
 			uint32_t pin;
 			int calibrate = 0;
 		};
-		
-		enum PinMode {
-			MODE_INPUT_UP	= 0,
-			MODE_INPUT_DOWN	= 1,
-			MODE_UP			= 2,
-			MODE_DOWN		= 3,
-		};
 	
 	protected:
 		static Pin m_pins[];
