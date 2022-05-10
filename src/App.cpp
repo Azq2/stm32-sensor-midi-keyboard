@@ -171,7 +171,6 @@ int App::run() {
 		struct {
 			uint32_t time;
 			bool state;
-			bool canceled;
 		} last_pressed[COUNT_OF(m_pins)] = {};
 		int cnt = 0;
 		
@@ -188,10 +187,8 @@ int App::run() {
 				
 				if (last_pressed[i].state != pressed) {
 					uint32_t elapsed = DWT_CYCCNT - last_pressed[i].time;
-					if (elapsed < DEBOUNCE_CYCLES) {
-						last_pressed[i].canceled = true;
+					if (elapsed < DEBOUNCE_CYCLES)
 						continue;
-					}
 					
 					last_pressed[i].time = DWT_CYCCNT;
 					
@@ -213,7 +210,6 @@ int App::run() {
 							gpio_set(GPIOC, GPIO13);
 					}
 					
-					last_pressed[i].canceled = false;
 					last_pressed[i].state = pressed;
 					cnt++;
 				} else {
