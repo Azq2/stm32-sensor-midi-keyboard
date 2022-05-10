@@ -97,7 +97,7 @@ int App::readPulses(const Pin &p) {
 		gpio_clear(p.port, p.pin);
 		gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
 		
-		// Charge to >1.88V and measure wasted time
+		// Charge to >1.88V and measure elapsed time
 		start = DWT_CYCCNT;
 		gpio_set(p.port, p.pin);
 		while (!gpio_get(p.port, p.pin));
@@ -106,13 +106,16 @@ int App::readPulses(const Pin &p) {
 		// Complete charge to 3.3V
 		gpio_set_mode(p.port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, p.pin);
 		
-		// Discharge to <1.23V and measure wasted time
+		// Discharge to <1.23V and measure elapsed time
 		gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
 		
 		start = DWT_CYCCNT;
 		gpio_clear(p.port, p.pin);
 		while (gpio_get(p.port, p.pin));
 		count += DWT_CYCCNT - start;
+		
+		// Complete discharge to 0V
+		gpio_set_mode(p.port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, p.pin);
 	}
 	return count / SAMPLES_CNT;
 }
