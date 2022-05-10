@@ -35,7 +35,6 @@ class App {
 		
 		void initHw();
 		void initSensors();
-		void setPinMode(const Pin &p, PinMode mode);
 		int readPulses(const Pin &p);
 		int readSensorValue(const Pin &p);
 		

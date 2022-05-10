@@ -66,30 +66,6 @@ void App::initHw() {
 	gpio_set_value(GPIOC, GPIO13, true);
 }
 
-void App::setPinMode(const Pin &p, PinMode mode) {
-	switch (mode) {
-		case MODE_UP:
-			gpio_set_mode(p.port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, p.pin);
-			gpio_set(p.port, p.pin);
-		break;
-		
-		case MODE_DOWN:
-			gpio_set_mode(p.port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, p.pin);
-			gpio_clear(p.port, p.pin);
-		break;
-		
-		case MODE_INPUT_UP:
-			gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
-			gpio_set(p.port, p.pin);
-		break;
-		
-		case MODE_INPUT_DOWN:
-			gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
-			gpio_clear(p.port, p.pin);
-		break;
-	}
-}
-
 int App::readPulses(const Pin &p) {
 	int start = 0, count = 0;
 	for (int i = 0; i < SAMPLES_CNT; i++) {
@@ -123,8 +99,10 @@ int App::readPulses(const Pin &p) {
 void App::initSensors() {
 	printf("Sensors count: %d\r\n", COUNT_OF(m_pins));
 	printf("Init sensors pins...\r\n");
-	for (size_t i = 0; i < COUNT_OF(m_pins); i++)
-		setPinMode(m_pins[i], MODE_DOWN);
+	for (size_t i = 0; i < COUNT_OF(m_pins); i++) {
+		gpio_set_mode(m_pins[i].port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, m_pins[i].pin);
+		gpio_clear(m_pins[i].port, m_pins[i].pin);
+	}
 	
 	printf("Calibrating...\r\n");
 	for (int j = 0; j < CALIBRATION_CYCLES; j++) {
