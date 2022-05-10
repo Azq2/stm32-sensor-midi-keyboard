@@ -182,12 +182,12 @@ int App::run() {
 					if (pressed) {
 						cnt++;
 						
-						if (pressed == 1)
+						if (cnt == 1)
 							gpio_clear(GPIOC, GPIO13);
 					} else {
 						cnt--;
 						
-						if (!pressed)
+						if (!cnt)
 							gpio_set(GPIOC, GPIO13);
 					}
 					
