@@ -1,5 +1,8 @@
 #include "App.h"
 
+#include <algorithm>
+#include <climits>
+
 #include "Gpio.h"
 #include "utils.h"
 
@@ -58,11 +61,6 @@ void App::initHw() {
 	rcc_periph_clock_enable(RCC_USART1);
 	uart_simple_setup(USART1, 115200, true);
 	
-	// Setup systick
-	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
-	systick_set_reload(rcc_ahb_frequency / 1000);
-	systick_interrupt_enable();
-	
 	// PC13 - status led
 	gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO13);
 	gpio_set_value(GPIOC, GPIO13, true);
@@ -93,17 +91,30 @@ void App::setPinMode(const Pin &p, PinMode mode) {
 }
 
 int App::readPulses(const Pin &p) {
-	uint32_t start = dwt_read_cycle_counter();
-	for (int i = 0; i < 8; i++) {
-		setPinMode(p, MODE_INPUT_UP);
-		while (!gpio_get(p.port, p.pin));
-		setPinMode(p, MODE_UP);
+	int start = 0, count = 0;
+	for (int i = 0; i < SAMPLES_CNT; i++) {
+		// Switch to input
+		gpio_clear(p.port, p.pin);
+		gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
 		
-		setPinMode(p, MODE_INPUT_DOWN);
+		// Charge to >1.88V and measure wasted time
+		start = DWT_CYCCNT;
+		gpio_set(p.port, p.pin);
+		while (!gpio_get(p.port, p.pin));
+		count += DWT_CYCCNT - start;
+		
+		// Complete charge to 3.3V
+		gpio_set_mode(p.port, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, p.pin);
+		
+		// Discharge to <1.23V and measure wasted time
+		gpio_set_mode(p.port, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, p.pin);
+		
+		start = DWT_CYCCNT;
+		gpio_clear(p.port, p.pin);
 		while (gpio_get(p.port, p.pin));
-		setPinMode(p, MODE_DOWN);
+		count += DWT_CYCCNT - start;
 	}
-	return dwt_read_cycle_counter() - start;
+	return count / SAMPLES_CNT;
 }
 
 void App::initSensors() {
@@ -113,22 +124,27 @@ void App::initSensors() {
 		setPinMode(m_pins[i], MODE_DOWN);
 	
 	printf("Calibrating...\r\n");
-	for (size_t i = 0; i < COUNT_OF(m_pins); i++)
-		m_pins[i].calibrate = readPulses(m_pins[i]);
+	for (int j = 0; j < CALIBRATION_CYCLES; j++) {
+		for (size_t i = 0; i < COUNT_OF(m_pins); i++) 
+			m_pins[i].calibrate += readPulses(m_pins[i]);
+	}
+	
+	for (size_t i = 0; i < COUNT_OF(m_pins); i++) {
+		m_pins[i].calibrate = m_pins[i].calibrate / CALIBRATION_CYCLES;
+		printf("%d - P%c%d = %d \r\n", i, Gpio::bank2name(m_pins[i].port), Gpio::pin2id(m_pins[i].pin), m_pins[i].calibrate);
+	}
 }
 
-bool App::isPressed(const Pin &p) {
-	// FIXME: change float to int
-	int cnt = readPulses(p);
-	float pct = 100 - (float) p.calibrate / (float) cnt * 100;
-	return pct > SENSOR_KEY_THRESHOLD;
+int App::readSensorValue(const Pin &p) {
+	int delta = abs(readPulses(p) - p.calibrate);
+	return (delta * 10000 / p.calibrate);
 }
 
 int App::run() {
 	initHw();
 	initSensors();
 	
-	if (DEBUG_KEYS) {
+	if (DEBUG_SORT_KEYS) {
 		bool used_gpios[COUNT_OF(m_pins)] = {false};
 		size_t cnt = 0;
 		
@@ -136,7 +152,10 @@ int App::run() {
 		
 		while (true) {
 			for (size_t i = 0; i < COUNT_OF(m_pins); i++) {
-				if (!used_gpios[i] && isPressed(m_pins[i])) {
+				int value = readSensorValue(m_pins[i]);
+				bool pressed = isPressed(i, value);
+				
+				if (!used_gpios[i] && pressed) {
 					printf("{GPIO%c, GPIO%d},\r\n", Gpio::bank2name(m_pins[i].port), Gpio::pin2id(m_pins[i].pin));
 					used_gpios[i] = true;
 					cnt++;
@@ -152,6 +171,7 @@ int App::run() {
 		struct {
 			uint32_t time;
 			bool state;
+			bool canceled;
 		} last_pressed[COUNT_OF(m_pins)] = {};
 		int cnt = 0;
 		
@@ -163,14 +183,23 @@ int App::run() {
 			for (size_t i = 0; i < COUNT_OF(m_pins); i++) {
 				m_usb.poll();
 				
-				if (dwt_read_cycle_counter() - last_pressed[i].time < DEBOUNCE_CYCLES)
-					continue;
+				int value = readSensorValue(m_pins[i]);
+				bool pressed = isPressed(i, value);
 				
-				bool pressed = isPressed(m_pins[i]);
 				if (last_pressed[i].state != pressed) {
-				//	printf("%d - P%c%d = %d [delta=%d]\r\n", cnt, Gpio::bank2name(m_pins[i].port), Gpio::pin2id(m_pins[i].pin), pressed, dwt_read_cycle_counter() - last_pressed[i].time);
+					uint32_t elapsed = DWT_CYCCNT - last_pressed[i].time;
+					if (elapsed < DEBOUNCE_CYCLES) {
+						last_pressed[i].canceled = true;
+						continue;
+					}
 					
-					m_usb.sendEvent(NOTE_OFFSET + i, 64, pressed);
+					last_pressed[i].time = DWT_CYCCNT;
+					
+					if (DEBUG_PRESS_KEYS) {
+						printf("%d - P%c%d = %d [%.02f%%], elapsed=%lu\r\n", i, Gpio::bank2name(m_pins[i].port), Gpio::pin2id(m_pins[i].pin), pressed, (float) value / 100, elapsed);
+					} else {
+						m_usb.sendEvent(NOTE_OFFSET + i, 64, pressed);
+					}
 					
 					if (pressed) {
 						cnt++;
@@ -184,9 +213,11 @@ int App::run() {
 							gpio_set(GPIOC, GPIO13);
 					}
 					
-					last_pressed[i].time = dwt_read_cycle_counter();
+					last_pressed[i].canceled = false;
 					last_pressed[i].state = pressed;
 					cnt++;
+				} else {
+					last_pressed[i].time = DWT_CYCCNT;
 				}
 			}
 		}
