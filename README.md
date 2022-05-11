@@ -2,7 +2,7 @@
 
 This is project of DIY USB 25-keys MIDI sensor keyboard using stm32f103c8t6 (bluepill).
 
-Demo with test: https://www.youtube.com/watch?v=1aOL8qs3DmQ
+Video with test: https://www.youtube.com/watch?v=1aOL8qs3DmQ
 
 # How this works? 🤔
 
