@@ -1,10 +1,27 @@
 # stm32-sensor-midi-keyboard
 
-# How that's works???
+# How that works? 🤔
 
-I don't know, really...
+All piano keys is a capacitive touch sensors.
+The microcontroller continuously measure needed time for change pin state from 0 to 1 and and back
+That's have little lag, because any gpio pin have parasitic capacitance.
+And when finger touches pin there is a current leak happens and time to charge/discharge changes.
 
-# Pinout
+The algorithm is simple:
+1. Change pin to input with internal pull-up
+2. Measure time until pin have `1` state
+3. Change pin to output=1 for complete charge parasitic capacitor
+4. Change pin to input with internal pull-down
+5. Measure time until pin have `0` state
+6. Change pin to output=0 for complete discharge parasitic capacitor
+
+Any deviations in these measured times is meaning for key press.
+
+# Shematic
+
+![Schematic](docs/schematic.png)
+
+Current pinout which use in the code:
 
 |Pin|Note|
 |---|---|
