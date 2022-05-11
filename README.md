@@ -7,7 +7,7 @@ Video with test: https://www.youtube.com/watch?v=1aOL8qs3DmQ
 # How this works? 🤔
 
 All piano keys is a capacitive touch sensors.
-The microcontroller continuously measure needed time for change pin state from 0 to 1 and and back
+The microcontroller continuously measure needed time for change pin state from 0 to 1 and and back.
 That's have little lag, because any gpio pin have parasitic capacitance.
 And when finger touches pin there is a current leak happens and time to charge/discharge changes.
 
