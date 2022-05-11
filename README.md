@@ -63,7 +63,9 @@ I use keys cut from tin and mounted to part of fruit box 🤦‍♂️
 
 All keys lacquered for isolation. That important if you don't want to fried your MCU.
 
+![Device photo](docs/device-photo-preview.jpg)
 
+(See full size: [docs/device-photo.jpg](docs/device-photo.jpg))
 
 To simplify this I write piano-layout generator in php: [gen-piano.php](gen-piano.php)
 
