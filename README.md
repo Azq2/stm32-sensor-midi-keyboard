@@ -1,6 +1,6 @@
 # stm32-sensor-midi-keyboard
 
-# How that works? 🤔
+# How this works? 🤔
 
 All piano keys is a capacitive touch sensors.
 The microcontroller continuously measure needed time for change pin state from 0 to 1 and and back
@@ -57,9 +57,27 @@ But you can connect key in any random order and just generate new `App::m_pins` 
 
 That's exactly what I did 🤦‍♂️
 
+# Hardware design
+
+I use keys cut from tin and mounted to part of fruit box 🤦‍♂️
+
+To simplify this I write piano-layout generator in php: [gen-piano.php](gen-piano.php)
+
+```bash
+# gen-piano.php <number of keys>
+php gen-piano.php 25
+```
+
+For example, layouts for 25-keys MIDI for this project:
+- Black keys layout for cutting: [docs/piano-black-keys-for-cut.png](docs/piano-black-keys-for-cut.png)
+- White keys layout for cutting: [docs/piano-white-keys-for-cut.png](docs/piano-black-keys-for-cut.png)
+- Drill layout: [piano-drill-map.png](piano-drill-map.png)
+
+All these images have 300 ppi resolution. Just print and cut! :)
+
 # Configuration
 
-Okay you built this device. And as expected, nothing works. That is scam???? 😱
+Okay you built this device. And as expected, nothing works. Oh no, this is scam???? 😱
 
 No, that's okay. Different constructions have different parameters and my settings maybe not suitable for you. 
 
