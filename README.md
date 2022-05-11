@@ -82,7 +82,7 @@ php gen-piano.php 25
 For example, layouts for 25-keys MIDI for this project:
 - Black keys layout for cutting: [docs/piano-black-keys-for-cut.png](docs/piano-black-keys-for-cut.png)
 - White keys layout for cutting: [docs/piano-white-keys-for-cut.png](docs/piano-black-keys-for-cut.png)
-- Drill layout: [piano-drill-map.png](piano-drill-map.png)
+- Drill layout: [docs/piano-drill-map.png](docs/piano-drill-map.png)
 
 All of these images have 300 ppi resolution. Just print and cut! :)
 
