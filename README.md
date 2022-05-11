@@ -127,6 +127,12 @@ In case of [BlackMagic Probe](https://github.com/blackmagic-debug/blackmagic) yo
 make install
 ```
 
+# How to use?
+
+Just connect to USB and it works. I love linux for this.
+
+I really don't know what actions needed for windows/osx :)
+
 # Debug
 
 I use USART1 for debug output. Connect any USART-to-USB adapter to these pins:
