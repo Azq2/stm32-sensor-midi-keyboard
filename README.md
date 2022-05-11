@@ -59,7 +59,7 @@ That's exactly what I did 🤦‍♂️
 
 # Configuration
 
-Okay you built this device. And as expected, nothing works. These is scam???? 😱
+Okay you built this device. And as expected, nothing works. That is scam???? 😱
 
 No, that's okay. Different constructions have different parameters and my settings maybe not suitable for you. 
 
@@ -81,3 +81,21 @@ Other parameters:
 | DEBUG_PRESS_KEYS | false | Debug mode for tune thresholds |
 
 You can find all of these parameters in [src/App.h](src/App.h)
+
+# Build firmware
+
+You need arm-none-eabi compiler for arm: https://developer.arm.com/downloads/-/gnu-rm
+
+```bash
+git clone https://github.com/Azq2/stm32-sensor-midi-keyboard
+cd stm32-sensor-midi-keyboard
+./build_libopencm3.sh
+make
+```
+
+After this you have `app.bin` and `app.elf`. Just flash one of this in any appropriate way.
+
+In case of [BlackMagic Probe](https://github.com/blackmagic-debug/blackmagic) you can simply flash using this command:
+```bash
+make install
+```
