@@ -1,4 +1,6 @@
-# stm32-sensor-midi-keyboard
+# What is this?
+
+This is project of DIY 25-keys MIDI sensor keyboard using stm32f103c8t6 (bluepill).
 
 # How this works? 🤔
 
