@@ -132,5 +132,6 @@ make install
 I use USART1 for debug output. Connect any USART-to-USB adapter to these pins:
 
 | MCU | USART-to-USB |
+|---|---|
 | PA9 (TX) | RX |
 | PA10 (RX) | TX |
