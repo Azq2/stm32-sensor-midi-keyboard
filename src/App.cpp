@@ -37,6 +37,7 @@ App::Pin App::m_pins[] = {
 	{GPIOA, GPIO3},
 	{GPIOA, GPIO6},
 	{GPIOB, GPIO6},
+	{GPIOB, GPIO10},
 };
 
 void App::initHw() {
@@ -176,7 +177,7 @@ int App::run() {
 					if (DEBUG_PRESS_KEYS) {
 						printf("%d - P%c%d = %d [%.02f%%], elapsed=%lu\r\n", i, Gpio::bank2name(m_pins[i].port), Gpio::pin2id(m_pins[i].pin), pressed, (float) value / 100, elapsed);
 					} else {
-						m_usb.sendEvent(NOTE_OFFSET + i, 64, pressed);
+						m_usb.sendEvent(NOTE_OFFSET + i, KEY_VELOCITY, pressed);
 					}
 					
 					if (pressed) {
