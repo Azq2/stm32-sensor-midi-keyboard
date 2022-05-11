@@ -61,6 +61,10 @@ That's exactly what I did 🤦‍♂️
 
 I use keys cut from tin and mounted to part of fruit box 🤦‍♂️
 
+All keys lacquered for isolation. That important if you don't want to fried your MCU.
+
+
+
 To simplify this I write piano-layout generator in php: [gen-piano.php](gen-piano.php)
 
 ```bash
