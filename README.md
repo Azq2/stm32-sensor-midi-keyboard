@@ -1,6 +1,6 @@
 # What is this?
 
-This is project of DIY 25-keys MIDI sensor keyboard using stm32f103c8t6 (bluepill).
+This is project of DIY USB 25-keys MIDI sensor keyboard using stm32f103c8t6 (bluepill).
 
 # How this works? 🤔
 
@@ -55,13 +55,13 @@ Current pinout which use in the code:
 |PB6|B4|
 |PB10|C4|
 
-But you can connect key in any random order and just generate new `App::m_pins` using `DEBUG_SORT_KEYS=true` mode.
+But you can connect keys in any random order and just generate new `App::m_pins` using `DEBUG_SORT_KEYS=true` mode.
 
 That's exactly what I did 🤦‍♂️
 
 # Hardware design
 
-I use keys cut from tin and mounted to part of fruit box 🤦‍♂️
+I use keys cut from tin and these mounted to part of fruit box 🤦‍♂️
 
 All keys lacquered for isolation. That important if you don't want to fried your MCU.
 
@@ -69,8 +69,9 @@ All keys lacquered for isolation. That important if you don't want to fried your
 
 (See full size: [docs/device-photo.jpg](docs/device-photo.jpg))
 
-To simplify this I write piano-layout generator in php: [gen-piano.php](gen-piano.php)
+To simplify this I wrote piano-layout generator in php: [gen-piano.php](gen-piano.php)
 
+Usage:
 ```bash
 # gen-piano.php <number of keys>
 php gen-piano.php 25
@@ -81,7 +82,7 @@ For example, layouts for 25-keys MIDI for this project:
 - White keys layout for cutting: [docs/piano-white-keys-for-cut.png](docs/piano-black-keys-for-cut.png)
 - Drill layout: [piano-drill-map.png](piano-drill-map.png)
 
-All these images have 300 ppi resolution. Just print and cut! :)
+All of these images have 300 ppi resolution. Just print and cut! :)
 
 # Configuration
 
@@ -125,3 +126,11 @@ In case of [BlackMagic Probe](https://github.com/blackmagic-debug/blackmagic) yo
 ```bash
 make install
 ```
+
+# Debug
+
+I use USART1 for debug output. Connect any USART-to-USB adapter to these pins:
+
+| MCU | USART-to-USB |
+| PA9 (TX) | RX |
+| PA10 (RX) | TX |
