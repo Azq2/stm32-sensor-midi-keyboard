@@ -67,7 +67,7 @@ void App::initHw() {
 	gpio_set_value(GPIOC, GPIO13, true);
 }
 
-int App::readPulses(const Pin &p) {
+int App::measureRechargeTime(const Pin &p) {
 	int start = 0, count = 0;
 	for (int i = 0; i < SAMPLES_CNT; i++) {
 		// Switch to input
@@ -108,7 +108,7 @@ void App::initSensors() {
 	printf("Calibrating...\r\n");
 	for (int j = 0; j < CALIBRATION_CYCLES; j++) {
 		for (size_t i = 0; i < COUNT_OF(m_pins); i++) 
-			m_pins[i].calibrate += readPulses(m_pins[i]);
+			m_pins[i].calibrate += measureRechargeTime(m_pins[i]);
 	}
 	
 	for (size_t i = 0; i < COUNT_OF(m_pins); i++) {
@@ -118,7 +118,7 @@ void App::initSensors() {
 }
 
 int App::readSensorValue(const Pin &p) {
-	int delta = abs(readPulses(p) - p.calibrate);
+	int delta = abs(measureRechargeTime(p) - p.calibrate);
 	return (delta * 10000 / p.calibrate);
 }
 

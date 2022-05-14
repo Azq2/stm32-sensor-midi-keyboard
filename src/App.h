@@ -34,7 +34,7 @@ class App {
 		
 		void initHw();
 		void initSensors();
-		int readPulses(const Pin &p);
+		int measureRechargeTime(const Pin &p);
 		int readSensorValue(const Pin &p);
 		
 		inline bool isBlackKey(int i) {
