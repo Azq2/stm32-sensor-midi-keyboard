@@ -55,7 +55,7 @@ Current pinout which use in the code:
 |PA3|A4|
 |PA6|A4#|
 |PB6|B4|
-|PB10|C4|
+|PB10|C5|
 
 But you can connect keys in any random order and just generate new `App::m_pins` using `DEBUG_SORT_KEYS=true` mode.
 
